@@ -11,26 +11,20 @@
     <h1>Network Fingerprinter</h1>
 
     <table>
-
-        <div class="title-card"> 
+        <thead class="title-card">
             <tr>
                 <th>IP Address</th>
                 <th>MAC Address</th>
             </tr>
-        </div>
-
-        {% for device in devices %}
-        
-        <div class="item-card">
-
-        <tr>
-            <td>{{ device.ip }}</td>
-            <td>{{ device.mac }}</td>
-        
-        </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr class="item-card">
+                <td>{{ device.ip }}</td>
+                <td>{{ device.mac }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-
-    </div>
 </body>
 </html>
