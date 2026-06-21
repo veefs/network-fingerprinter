@@ -27,6 +27,17 @@ def get_devices():
                     "deviceType": deviceType.text
                 })
 
+                ping = subprocess.run(["ping", ip], capture_output=True, text=True)
+                ping_output = ping.stdout
+
+                if "100% loss" in ping_output:
+                    print("unreachable")
+
+                else:
+                    print("reachable")
+
+                
+
     return devices
 
 @app.route("/")
