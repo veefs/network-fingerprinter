@@ -1,0 +1,30 @@
+from flask import Flask, render_template
+import re
+import subprocess
+
+app = Flask(__name__)
+
+def get_devices():
+    result = subprocess.run(["arp", "-a"], capture_output=True, text=True)
+    arp_output = result.stdout
+    devices = []
+
+    for line in arp_output.splitlines():
+        if "192" in line and "Interface" not in line:
+            parts = line.split()
+            if len(parts) >= 2:
+                ip = parts[0]
+                mac = parts[1]
+                ipType = parts[2]
+                devices.append({"ip": ip, "mac": mac, "ip type": ipType})
+
+    return devices
+
+@app.route("/")
+
+def index():
+    devices = get_devices()
+    return render_template("index.html", devices=devices)
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5001)

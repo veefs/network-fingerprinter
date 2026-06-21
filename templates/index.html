@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Network Fingerprinter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Network Fingerprinter</h1>
+
+    <table>
+
+        <div class="title-card"> 
+            <tr>
+                <th>IP Address</th>
+                <th>MAC Address</th>
+            </tr>
+        </div>
+
+        {% for device in devices %}
+        
+        <div class="item-card">
+
+        <tr>
+            <td>{{ device.ip }}</td>
+            <td>{{ device.mac }}</td>
+        
+        </tr>
+        {% endfor %}
+    </table>
+
+    </div>
+</body>
+</html>
