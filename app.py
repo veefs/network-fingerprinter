@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 import re
+import requests
 import subprocess
 
 app = Flask(__name__)
@@ -16,7 +17,15 @@ def get_devices():
                 ip = parts[0]
                 mac = parts[1]
                 ipType = parts[2]
-                devices.append({"ip": ip, "mac": mac, "ip type": ipType})
+
+                deviceType = requests.get(f"https://api.maclookup.app/v2/macs/{mac}/company/name")
+               
+                devices.append({
+                    "ip": ip,
+                    "mac": mac,
+                    "ipType": ipType,
+                    "deviceType": deviceType.text
+                })
 
     return devices
 
