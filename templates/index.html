@@ -36,9 +36,6 @@
         
     </table>
 
-
-
-
 <pre id="outputBox"></pre>
 
 <script>
@@ -75,18 +72,6 @@ async function sendScan() {
         <input type="text" id="targetIp" placeholder="Enter IP to scan...">
         <button onclick="sendScan()">Scan</button>
     </div>
-        <script>
-    async function sendScan() {
-        const ip = document.getElementById("targetIp").value;
-        const resp = await fetch("/scan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ target_ip: ip })
-        });
-        const data = await resp.json();
-        console.log(data); 
-    }
-    </script>
     
 </body>
 </html>
