@@ -11,7 +11,7 @@ Along with other reasons I mainly made this program to better learn flask templa
 
 ## Commands
 
-1 `help` **provides the same list of commands** 
-2. `set <ip>` **use this command to set the ip you want to target**
-3. `os` **this commands runs nmap -o and outputs all the information related to operation system packets**
+- `help` **provides the same list of commands** 
+- `set <ip>` **use this command to set the ip you want to target**
+- `os` **this commands runs nmap -o and outputs all the information related to operation system packets**
 
