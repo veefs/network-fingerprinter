@@ -1,4 +1,4 @@
-# network fingerprinter
+# Network fingerprinter
 
 ## What is network fingerprinter?
 
