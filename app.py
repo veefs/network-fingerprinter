@@ -49,7 +49,7 @@ def index():
     devices = get_devices()
     return render_template("index.html", devices=devices)
 
-known_ips = set()
+current_target = {"ip": None}
 
 def handle_options(option):
 
@@ -61,6 +61,14 @@ def handle_options(option):
 
     command = parts[0]
 
+    if command == "help":
+
+        if len(parts) > 1:
+
+            return {"status": "error", "result": "usage: help"}
+
+        return {"status": "ok", "result": f"Current commands are: set <ip> to set ip and os to see os information"}
+
     if command == "set":
 
         if len(parts) < 2:
@@ -69,17 +77,17 @@ def handle_options(option):
 
         ip = parts[1]
 
-        known_ips.add(ip)
+        current_target["ip"] = ip
 
-        return {"status": "ok", "result": f"added {ip}"}
+        return {"status": "ok", "result": f"target set to {ip}"}
 
     elif command == "os":
 
-        if len(parts) < 2:
+        ip = parts[1] if len(parts) >= 2 else current_target["ip"]
 
-            return {"status": "error", "result": "usage: os <ip>"}
+        if not ip:
 
-        ip = parts[1]
+            return {"status": "error", "result": "no target set. use: set <ip>"}
 
         NMAP_PATH = r"C:\Program Files (x86)\Nmap\nmap.exe"
         

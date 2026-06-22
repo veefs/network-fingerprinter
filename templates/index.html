@@ -42,11 +42,13 @@
 
 async function sendScan() {
 
-    const ip = document.getElementById("targetIp").value;
+    const commandInput = document.getElementById("targetIp");
+
+    const command = commandInput.value;
 
     const outputBox = document.getElementById("outputBox");
 
-    outputBox.textContent = "Scanning...";
+    outputBox.textContent = "Running...";
 
     const resp = await fetch("/scan", {
 
@@ -54,7 +56,7 @@ async function sendScan() {
 
         headers: { "Content-Type": "application/json" },
 
-        body: JSON.stringify({ target_ip: ip })
+        body: JSON.stringify({ target_ip: command })
 
     });
 
@@ -64,13 +66,21 @@ async function sendScan() {
 
     outputBox.textContent = data.result;
 
+    commandInput.value = "";
+
+}
+
+function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        sendScan();
+    }
 }
 
 </script>
 
     <div class="input-row">
-        <input type="text" id="targetIp" placeholder="Enter IP to scan...">
-        <button onclick="sendScan()">Scan</button>
+        <input type="text" id="targetIp" placeholder="e.g. set 192.168.68.1, then: os" onkeypress="handleKeyPress(event)">
+        <button onclick="sendScan()">Run</button>
     </div>
     
 </body>
