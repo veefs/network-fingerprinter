@@ -14,4 +14,4 @@ Along with other reasons I mainly made this program to better learn flask templa
 - Uses arp -a to list all devices on the network
 - Uses nmap -o to attempt to sniff out operating system packets
 - Uses mac address lookup to figure out what company device belongs too
-- Pings devices to see 
+- Pings devices to see if other attacks could work
