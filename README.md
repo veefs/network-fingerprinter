@@ -2,5 +2,6 @@
 
 ## Features
 
-- Uses arp -a to fingerprint devices
-- Searches api's for mac address lookups (with flask https posts)
+- Uses arp -a to list all devices on the network
+- Uses mac address lookup to figure out what company device belongs too
+- Pings devices to see 

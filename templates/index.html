@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Network Fingerprinter</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
     <h1>Network Fingerprinter</h1>
@@ -16,6 +16,7 @@
                 <th>IP Address</th>
                 <th>MAC Address</th>
                 <th>Device Type</th>
+                <th>Reachability</th>
             </tr>
         </thead>
         <tbody>
@@ -24,9 +25,68 @@
                 <td>{{ device.ip }}</td>
                 <td>{{ device.mac }}</td>
                 <td>{{ device.deviceType }}</td>
+                <td>{{ device.reachability}}</td>
             </tr>
+
+            
+            
             {% endfor %}
         </tbody>
+
+        
     </table>
+
+
+
+
+<pre id="outputBox"></pre>
+
+<script>
+
+async function sendScan() {
+
+    const ip = document.getElementById("targetIp").value;
+
+    const outputBox = document.getElementById("outputBox");
+
+    outputBox.textContent = "Scanning...";
+
+    const resp = await fetch("/scan", {
+
+        method: "POST",
+
+        headers: { "Content-Type": "application/json" },
+
+        body: JSON.stringify({ target_ip: ip })
+
+    });
+
+    const data = await resp.json();
+
+    console.log(data);
+
+    outputBox.textContent = data.result;
+
+}
+
+</script>
+
+    <div class="input-row">
+        <input type="text" id="targetIp" placeholder="Enter IP to scan...">
+        <button onclick="sendScan()">Scan</button>
+    </div>
+        <script>
+    async function sendScan() {
+        const ip = document.getElementById("targetIp").value;
+        const resp = await fetch("/scan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ target_ip: ip })
+        });
+        const data = await resp.json();
+        console.log(data); 
+    }
+    </script>
+    
 </body>
 </html>
