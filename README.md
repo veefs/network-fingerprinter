@@ -1,12 +1,12 @@
-# Network fingerprinter
+# Network Fingerprinter
 
 ## What is network fingerprinter?
 
-Network fingerprinter is a open source tool that profiles your network and allows you to use some tools like `set <ip>` and `os` these tools allow you to get a better understanding of your network. 
+Network Fingerprinter is a open source tool that profiles your network and allows you to use some tools like `set <ip>` and `os` these tools allow you to get a better understanding of your network. 
 
-## Why make network fingerprinter?
+## Why make Network Fingerprinter?
 
-Along with other reasons I mainly made this program to better learn flask templates in python. I was a little rusty on them to this allowed me to refreashen my memory as well as make a cool program.
+Along with other reasons I mainly made this program to better learn flask templates in python. I was a little rusty on them to this allowed me to refreshen my memory as well as make a cool program.
 
 
 ## Features
