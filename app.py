@@ -2,9 +2,26 @@ from flask import Flask, render_template, request, jsonify
 import re
 import requests
 import subprocess
+import sys
+import os
+import webbrowser
+import threading
 
 
-app = Flask(__name__)
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller onefile bundles."""
+    if hasattr(sys, "_MEIPASS"):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
+
+
+app = Flask(
+    __name__,
+    template_folder=resource_path("templates"),
+    static_folder=resource_path("static"),
+)
 
 def get_devices():
     result = subprocess.run(["arp", "-a"], capture_output=True, text=True)
@@ -135,7 +152,7 @@ def handle_options(option):
 
             port_result = subprocess.run(
 
-                 [NMAP_PATH, "-v", "-sV", ip], capture_output=True, text=True, timeout=120
+                 [NMAP_PATH, "-T4", "-F", "-sV", ip], capture_output=True, text=True, timeout=120
 
             )
 
@@ -209,6 +226,9 @@ def scan():
         return jsonify({"status": "error", "result": f"server error: {e}"}), 200
 
 if __name__ == "__main__":
+    # don't auto-open a browser tab on every reloader restart, only the real run
+    if not os.environ.get("WERKZEUG_RUN_MAIN"):
+        threading.Timer(1.0, lambda: webbrowser.open("http://127.0.0.1:5001")).start()
     app.run(debug=True, port=5001)
 
 
