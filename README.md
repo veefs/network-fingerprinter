@@ -11,9 +11,10 @@ Along with other reasons I mainly made this program to better learn flask templa
 
 ## Commands
 
+
 - `help` **provides the same list of commands** 
-- `set <ip>` **use this command to set the ip you want to target**
+- `clear` **refreshes the console with "cleared."**
+- `set <ip/port> <ip>` **use this command to set the ip & port you want to target**
 - `os` **this commands runs nmap -o and outputs all the information related to operation system packets**
 - `curl` **this commands curls the ip helpful if you think someone has a website on said port**
-- `ports` **this command scans all the ports using nmap -v -sV <ip>**
 

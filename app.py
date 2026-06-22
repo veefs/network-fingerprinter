@@ -9,7 +9,6 @@ import threading
 
 
 def resource_path(relative_path):
-    """Get absolute path to resource, works for dev and for PyInstaller onefile bundles."""
     if hasattr(sys, "_MEIPASS"):
         base_path = sys._MEIPASS
     else:
@@ -67,6 +66,7 @@ def index():
     return render_template("index.html", devices=devices)
 
 current_target = {"ip": None}
+current_target_port = {"port": None}
 
 def handle_options(option):
 
@@ -84,19 +84,38 @@ def handle_options(option):
 
             return {"status": "error", "result": "usage: help"}
 
-        return {"status": "ok", "result": f"Current commands are: set <ip>, os, curl, ports"}
+        return {"status": "ok", "result": f"Current commands are: set <port/ip> <ip>, os, curl, and clear"}
+    
+    elif command == "clear":
+
+        if len(parts) > 1:
+
+            return {"status": "error", "result": "usage: help"}
+
+        return {"status": "ok", "result": f"cleared"}
 
     elif command == "set":
 
-        if len(parts) < 2:
+        if len(parts) < 3:
 
-            return {"status": "error", "result": "usage: set <ip>"}
+            return {"status": "error", "result": "usage: set <ip/port> <input>"}
 
-        ip = parts[1]
+        
+        set_type = parts[1]
+        
+        if set_type == "port":
+            port = parts[2]
+            current_target_port["port"] = port
 
-        current_target["ip"] = ip
 
-        return {"status": "ok", "result": f"target set to {ip}"}
+
+        elif set_type == "ip":
+            ip = parts[2]
+            current_target["ip"] = ip
+
+   
+
+        return {"status": "ok", "result": f"{set_type} set to {parts[2]}"}
     
     elif command == "curl":
 
@@ -105,17 +124,15 @@ def handle_options(option):
             return {"status": "error", "result": "usage: curl"}
 
         ip = current_target["ip"]
+        port = current_target_port["port"]
 
         if not ip:
 
             return {"status": "error", "result": "no target set. use: set <ip>"}
-
         try:
 
             curl_result = subprocess.run(
-
-                 ["curl", ip], capture_output=True, text=True, timeout=15
-
+                 ["curl", ip, f":{port}"], capture_output=True, text=True, timeout=15
             )
 
             return {"status": "ok", "result": curl_result.stdout or curl_result.stderr}
@@ -133,60 +150,17 @@ def handle_options(option):
             return {"status": "error", "result": f"curl failed: {e}"}
 
 
-    
-    elif command == "ports":
-
-        NMAP_PATH = r"C:\Program Files (x86)\Nmap\nmap.exe"
-
-        if len(parts) > 1:
-
-            return {"status": "error", "result": "usage: ports"}
-
-        ip = current_target["ip"]
-
-        if not ip:
-
-            return {"status": "error", "result": "no target set. use: set <ip>"}
-
-        try:
-
-            port_result = subprocess.run(
-
-                 [NMAP_PATH, "-T4", "-F", "-sV", ip], capture_output=True, text=True, timeout=120
-
-            )
-
-            return {"status": "ok", "result": port_result.stdout or port_result.stderr}
-
-        except subprocess.TimeoutExpired:
-
-            return {"status": "error", "result": "ports scan timed out after 120s"}
-
-        except FileNotFoundError:
-
-            return {"status": "error", "result": f"nmap not found at {NMAP_PATH}"}
-
-        except Exception as e:
-
-            return {"status": "error", "result": f"ports scan failed: {e}"}
-
-    
     elif command == "os":
-
         ip = parts[1] if len(parts) >= 2 else current_target["ip"]
-
         if not ip:
 
             return {"status": "error", "result": "no target set. use: set <ip>"}
 
         NMAP_PATH = r"C:\Program Files (x86)\Nmap\nmap.exe"
-        
         try:
 
             scan_result = subprocess.run(
-
-                 [NMAP_PATH, "-O", ip], capture_output=True, text=True, timeout=120
-
+                 [NMAP_PATH, "-O", "-Pn", ip], capture_output=True, text=True, timeout=120
             )
 
             return {"status": "ok", "result": scan_result.stdout or scan_result.stderr}
