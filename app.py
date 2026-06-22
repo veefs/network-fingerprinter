@@ -6,6 +6,7 @@ import sys
 import os
 import webbrowser
 import threading
+import webbrowser
 
 
 def resource_path(relative_path):
@@ -84,7 +85,7 @@ def handle_options(option):
 
             return {"status": "error", "result": "usage: help"}
 
-        return {"status": "ok", "result": f"Current commands are: set <port/ip> <ip>, os, curl, and clear"}
+        return {"status": "ok", "result": f"Current commands are: set <port/ip> <ip>, os, curl <yes/no>, and clear"}
     
     elif command == "clear":
 
@@ -107,33 +108,41 @@ def handle_options(option):
             port = parts[2]
             current_target_port["port"] = port
 
-
-
         elif set_type == "ip":
             ip = parts[2]
             current_target["ip"] = ip
-
-   
 
         return {"status": "ok", "result": f"{set_type} set to {parts[2]}"}
     
     elif command == "curl":
 
-        if len(parts) > 1:
+        if len(parts) > 2:
 
-            return {"status": "error", "result": "usage: curl"}
+            return {"status": "error", "result": "usage: curl <yes/no> *display curled html file"}
 
         ip = current_target["ip"]
         port = current_target_port["port"]
 
-        if not ip:
+        selection_type = parts[1]
 
-            return {"status": "error", "result": "no target set. use: set <ip>"}
+        if selection_type != "yes" and selection_type != "no":
+
+            return {"status": "error", "result": "usage: curl <yes/no> *display curled html file"}
+
+
+        if not ip and not port:
+            return {"status": "error", "result": "no ip / port set. use: set <ip/port> <input>"}
         try:
 
             curl_result = subprocess.run(
-                 ["curl", ip, f":{port}"], capture_output=True, text=True, timeout=15
+                 ["curl", f"{ip}:{port}"], capture_output=True, text=True, timeout=15
             )
+            
+            if selection_type == "yes":
+                with open("display.html", "w") as f:
+                    f.write(curl_result.stdout)
+                webbrowser.open_new_tab("display.html")
+            
 
             return {"status": "ok", "result": curl_result.stdout or curl_result.stderr}
 
@@ -186,13 +195,9 @@ def handle_options(option):
 def scan():
 
     try:
-
         data = request.get_json()
-
         target_ip = data.get("target_ip")
-
         result = handle_options(target_ip)
-
         return jsonify(result)
 
     except Exception as e:
@@ -200,7 +205,7 @@ def scan():
         return jsonify({"status": "error", "result": f"server error: {e}"}), 200
 
 if __name__ == "__main__":
-    # don't auto-open a browser tab on every reloader restart, only the real run
+
     if not os.environ.get("WERKZEUG_RUN_MAIN"):
         threading.Timer(1.0, lambda: webbrowser.open("http://127.0.0.1:5001")).start()
     app.run(debug=True, port=5001)
